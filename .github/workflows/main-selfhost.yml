@@ -9,11 +9,9 @@ on:
 permissions:
   contents: write  # Allow writing to the repository
 
-runs-on: self-hosted
-
 jobs:
   gen_iso:
-    runs-on: ubuntu-latest
+    runs-on: selfhost
     container:
       image: ghcr.io/void-linux/void-glibc-full:latest
       options: --privileged
@@ -58,7 +56,7 @@ jobs:
           path: /root/void-mklive/void-live-x86_64-*.iso
 
   release:
-    runs-on: ubuntu-latest
+    runs-on: selfhost
     needs: gen_iso  # Ensure this job runs after the gen_iso job
 
     steps:
