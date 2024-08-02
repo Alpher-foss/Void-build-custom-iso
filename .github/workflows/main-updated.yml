@@ -1,4 +1,4 @@
-name: Generate and Release ISO ( updated )
+name: Generate and Release ISO (updated)
 
 on: 
   push:
@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV  # Changed to YYYYMMDD format
 
       - name: Install dependencies for actions/checkout@v3
         run: |
@@ -59,7 +59,7 @@ jobs:
     steps:
       - name: Get current date
         id: date
-        run: echo "DATE=$(date +'%Y.%m.%d')" >> $GITHUB_ENV
+        run: echo "DATE=$(date +'%Y%m%d')" >> $GITHUB_ENV  # Changed to match the format used in gen_iso
 
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -72,14 +72,18 @@ jobs:
       - name: Create Tag
         id: create_tag
         run: |
-          git tag v${{ env.DATE }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag v${{ env.DATE }}  # This tag now follows vYYYYMMDD format
           git push origin v${{ env.DATE }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
 
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ env.DATE }}
+          tag_name: v${{ env.DATE }}  # Ensure this matches the tag created
           release_name: Release v${{ env.DATE }}
           draft: false
           prerelease: false
@@ -93,3 +97,5 @@ jobs:
           asset_path: void-live-x86_64-${{ env.DATE }}-${{ github.sha }}.iso  # Path to the downloaded ISO
           asset_name: void-live-x86_64-${{ env.DATE }}-${{ github.sha }}.iso  # Name for the uploaded asset
           asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
