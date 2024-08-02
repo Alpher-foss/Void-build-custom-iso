@@ -1,4 +1,4 @@
-name: Generate and Release ISO
+name: Generate and Release ISO ( selfhost runner)
 
 on: 
   push:
