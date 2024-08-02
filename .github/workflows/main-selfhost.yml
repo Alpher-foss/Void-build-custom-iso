@@ -9,6 +9,8 @@ on:
 permissions:
   contents: write  # Allow writing to the repository
 
+runs-on: self-hosted
+
 jobs:
   gen_iso:
     runs-on: ubuntu-latest
